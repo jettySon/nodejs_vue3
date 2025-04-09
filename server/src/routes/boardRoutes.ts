@@ -11,4 +11,10 @@ const boardController = new BoardController();
  */
 router.get('/', boardController.getBoards);
 
+/**
+ * 특정 게시물 조회 (쿼리 파라미터 사용)
+ * GET /api/boards/one?idx=1
+ */
+router.get('/one/:idx', boardController.getBoardOne);
+
 export default router;
