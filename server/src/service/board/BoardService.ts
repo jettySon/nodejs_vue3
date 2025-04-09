@@ -27,7 +27,7 @@ export default class BoardService {
                 where: { isUse: true },
                 skip,
                 take: limit,
-                orderBy: { id: 'desc' }
+                orderBy: { idx: 'desc' }
             })
         ]);
 
@@ -49,15 +49,14 @@ export default class BoardService {
 
     private mapToVO(data: any): BoardVO {
         return new BoardVO(
-            data.id,
+            data.idx,
             data.boardKey,
             data.writerKey,
             data.writer,
             data.title,
             data.contentText,
             data.isUse,
-            data.createdAt,
-            data.updatedAt
+            data.createDate
         );
     }
 }
