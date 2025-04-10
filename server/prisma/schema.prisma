@@ -1,4 +1,3 @@
-// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,15 +7,2124 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Board {
-  idx          Int      @id @default(autoincrement())
-  board_key    String
-  writer_key   String
-  writer       String
-  title        String
-  content_text String?  @db.Text
-  is_use       Boolean  @default(true)
-  create_date  DateTime @default(now())
+model cms_board_data {
+  idx            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  ai_text        String?   @db.LongText
+  board_key      String?   @db.VarChar(50)
+  board_type     String?   @default("html") @db.VarChar(15)
+  cate_code      String?   @db.VarChar(20)
+  co_code        String?   @db.VarChar(500)
+  content_text   String?   @db.LongText
+  depth          Int?
+  gid            BigInt?
+  is_all_target  Boolean   @db.Bit(1)
+  is_notice      Boolean   @db.Bit(1)
+  is_secret      Boolean   @db.Bit(1)
+  is_temp        Boolean   @db.Bit(1)
+  is_use         Boolean   @db.Bit(1)
+  job_code       String?   @db.VarChar(500)
+  opt1           String?   @db.VarChar(100)
+  opt2           String?   @db.VarChar(100)
+  opt3           String?   @db.VarChar(100)
+  opt4           String?   @db.VarChar(100)
+  opt5           String?   @db.VarChar(100)
+  pidx           BigInt
+  receiver       String?   @db.VarChar(100)
+  receiver_key   String?   @db.VarChar(100)
+  reg_ip         String?   @db.VarChar(255)
+  script         String?   @db.LongText
+  skill_code     String?   @db.VarChar(500)
+  status_code    String?   @db.VarChar(20)
+  tags           String?   @db.VarChar(200)
+  thumb_idx      BigInt?
+  title          String?   @db.VarChar(200)
+  tree_level     String?   @db.VarChar(255)
+  views          BigInt?
+  writer         String?   @db.VarChar(50)
+  writer_key     String?   @db.VarChar(100)
+  writer_pw      String?   @db.VarChar(200)
+  order_main     BigInt
+  order_num      BigInt
 
+  @@index([board_key], map: "index_board_key")
+  @@index([cate_code], map: "index_cate_code")
   @@map("cms_board_data")
+}
+
+model cms_access {
+  idx            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  ip             String?   @db.LongText
+  is_use         Boolean?  @db.Bit(1)
+  memo           String?   @db.LongText
+  user_id        String?   @db.VarChar(50)
+}
+
+model cms_account {
+  idx            Int       @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  co_code        String?   @db.VarChar(150)
+  is_admin       Boolean   @db.Bit(1)
+  is_delete      Boolean   @db.Bit(1)
+  level          Int
+  passwd         String?   @db.VarChar(200)
+  start_url      String?   @db.VarChar(100)
+  themes_name    String?   @db.VarChar(10)
+  user_id        String?   @db.VarChar(100)
+  user_name      String?   @db.VarChar(50)
+}
+
+model cms_account_menu {
+  idx            Int       @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  menu_code      String?   @db.VarChar(255)
+  user_id        String?   @db.VarChar(100)
+
+  @@index([user_id], map: "index_user_id")
+}
+
+model cms_board_cautions {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  bidx           BigInt
+  user_id        String    @db.VarChar(50)
+
+  @@index([bidx], map: "IDX_bidx")
+  @@index([user_id], map: "IDX_userId")
+}
+
+model cms_board_comment {
+  cidx                   BigInt                   @id @default(autoincrement())
+  create_date            DateTime?                @db.DateTime(6)
+  create_user_id         String?                  @db.VarChar(50)
+  update_date            DateTime?                @db.DateTime(6)
+  update_user_id         String?                  @db.VarChar(50)
+  bidx                   BigInt?
+  content_text           String?                  @db.LongText
+  is_temporary           Boolean?                 @db.Bit(1)
+  is_use                 Boolean                  @db.Bit(1)
+  opt1                   String?                  @db.VarChar(20)
+  opt2                   String?                  @db.VarChar(255)
+  opt3                   String?                  @db.VarChar(255)
+  pidx                   BigInt
+  reg_ip                 String?                  @db.VarChar(30)
+  tree_level             String?                  @db.VarChar(255)
+  writer                 String?                  @db.VarChar(50)
+  writer_key             String?                  @db.VarChar(100)
+  writer_pw              String?                  @db.VarChar(100)
+  cms_board_comment_file cms_board_comment_file[]
+}
+
+model cms_board_comment_file {
+  cfidx             BigInt             @id @default(autoincrement())
+  create_date       DateTime?          @db.DateTime(6)
+  create_user_id    String?            @db.VarChar(50)
+  update_date       DateTime?          @db.DateTime(6)
+  update_user_id    String?            @db.VarChar(50)
+  cnt_download      BigInt
+  cnt_play          BigInt
+  cnt_show          BigInt
+  duration          BigInt
+  fileext           String?            @db.VarChar(10)
+  filename          String?            @db.VarChar(255)
+  filesize          BigInt
+  is_s3             Boolean?           @default(dbgenerated("b'0'")) @db.Bit(1)
+  realfilename      String?            @db.VarChar(80)
+  s3real_link       String?            @db.VarChar(300)
+  web_path          String?            @db.VarChar(255)
+  cidx              BigInt?
+  cms_board_comment cms_board_comment? @relation(fields: [cidx], references: [cidx], onDelete: Restrict, onUpdate: Restrict, map: "FKk90vth2xcs49g2l2v1cvwcnnl")
+
+  @@index([cidx], map: "FKk90vth2xcs49g2l2v1cvwcnnl")
+}
+
+model cms_board_content {
+  idx            BigInt    @id
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  ai_html        String?   @db.LongText
+  content_html   String?   @db.LongText
+  script_html    String?   @db.LongText
+
+  @@index([idx], map: "IDX_idx")
+}
+
+model cms_board_file {
+  fidx           BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  bidx           BigInt?
+  cnt_download   BigInt
+  cnt_play       BigInt
+  cnt_show       BigInt
+  duration       BigInt
+  file_mode      String?   @default("attach") @db.VarChar(10)
+  file_status    String?   @db.VarChar(20)
+  fileext        String?   @db.VarChar(10)
+  filename       String?   @db.VarChar(255)
+  filesize       BigInt
+  is_s3          Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  ordering       BigInt    @default(0)
+  realfilename   String?   @db.VarChar(80)
+  s3real_link    String?   @db.VarChar(300)
+  web_path       String?   @db.VarChar(255)
+
+  @@index([bidx], map: "IDX_bidx")
+  @@index([fidx], map: "IDX_fidx")
+}
+
+model cms_board_history {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  bidx           BigInt?
+  fidx           BigInt?
+  user_id        String?   @db.VarChar(50)
+  user_name      String?   @db.VarChar(50)
+}
+
+model cms_board_info {
+  idx              BigInt    @id @default(autoincrement())
+  create_date      DateTime? @db.DateTime(6)
+  create_user_id   String?   @db.VarChar(50)
+  update_date      DateTime? @db.DateTime(6)
+  update_user_id   String?   @db.VarChar(50)
+  board_key        String?   @db.VarChar(50)
+  board_mode       String?   @db.VarChar(15)
+  board_name       String?   @db.VarChar(50)
+  cate_code        String?   @db.VarChar(20)
+  default_text     String?   @db.LongText
+  description      String?   @db.VarChar(255)
+  form_text        String?   @db.LongText
+  is_anonymous     Boolean   @db.Bit(1)
+  is_card_contents Boolean   @db.Bit(1)
+  is_category      Boolean   @db.Bit(1)
+  is_comment       Boolean   @db.Bit(1)
+  is_comment_rate  String?   @db.VarChar(50)
+  is_company       Boolean   @default(dbgenerated("b'1'")) @db.Bit(1)
+  is_delete        Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_file          Boolean   @db.Bit(1)
+  is_form          Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_mov_contents  Boolean   @db.Bit(1)
+  is_nickname      Boolean   @db.Bit(1)
+  is_nologin       Boolean   @db.Bit(1)
+  is_notice        Boolean   @db.Bit(1)
+  is_personal      Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_push          Boolean   @db.Bit(1)
+  is_secret        Boolean   @db.Bit(1)
+  is_status        Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_tag           Boolean   @db.Bit(1)
+  is_target        Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_thumbnail     Boolean   @db.Bit(1)
+  is_write         Boolean   @db.Bit(1)
+  is_write_rate    String?   @db.VarChar(50)
+  page_count       Int
+  rate_code        String?   @db.VarChar(10)
+  status_code      String?   @db.VarChar(20)
+}
+
+model cms_board_likes {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  bidx           BigInt
+  user_id        String    @db.VarChar(50)
+
+  @@index([bidx], map: "IDX_bidx")
+  @@index([user_id], map: "IDX_userId")
+}
+
+model cms_board_recommend {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  all_target     Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  co_code        String?   @db.VarChar(100)
+  description    String?   @db.VarChar(100)
+  recommend_list String?   @db.LongText
+  title          String?   @db.VarChar(100)
+
+  @@index([co_code], map: "IDX_COCODE")
+}
+
+model cms_board_wishs {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  bidx           BigInt
+  user_id        String    @db.VarChar(50)
+
+  @@index([bidx], map: "IDX_bidx")
+  @@index([user_id], map: "IDX_userId")
+}
+
+model cms_calendar {
+  idx              BigInt    @id @default(autoincrement())
+  all_day          String?   @db.VarChar(255)
+  background_color String?   @db.VarChar(255)
+  content          String?   @db.VarChar(255)
+  description      String?   @db.VarChar(200)
+  ed_date          DateTime? @db.DateTime(6)
+  is_loop          String?   @db.VarChar(1)
+  is_open          String?   @db.VarChar(1)
+  out_link         String?   @db.VarChar(255)
+  regdate          DateTime? @db.DateTime(6)
+  st_date          DateTime? @db.DateTime(6)
+  title            String?   @db.VarChar(50)
+  user_id          String?   @db.VarChar(100)
+}
+
+model cms_display_banner {
+  idx        BigInt  @id @default(autoincrement())
+  banner_opt String? @db.VarChar(10)
+  banner_src String? @db.VarChar(255)
+  co_code    String? @db.VarChar(100)
+  is_display Boolean @db.Bit(1)
+  link       String? @db.VarChar(255)
+  link_type  String  @db.VarChar(10)
+  ordering   Int
+  title      String? @db.VarChar(50)
+}
+
+model cms_display_popup {
+  idx             Int       @id @default(autoincrement())
+  close_positionx Int
+  close_positiony Int
+  img_main        String?   @db.LongText
+  img_main_data   String?   @db.LongText
+  img_url         String?   @db.VarChar(255)
+  is_use          String?   @db.VarChar(255)
+  link_positionx  Int
+  link_positiony  Int
+  link_sizex      Int
+  link_sizey      Int
+  regdate         DateTime? @db.DateTime(6)
+  sizex           Int
+  sizey           Int
+  title           String?   @db.VarChar(255)
+  url             String?   @db.VarChar(255)
+}
+
+model cms_file {
+  fidx           BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  cnt_download   BigInt
+  cnt_play       BigInt
+  cnt_show       BigInt
+  duration       BigInt
+  file_status    String?   @db.VarChar(20)
+  fileext        String?   @db.VarChar(10)
+  filename       String?   @db.VarChar(255)
+  filesize       BigInt
+  is_s3          Boolean   @db.Bit(1)
+  realfilename   String?   @db.VarChar(80)
+  s3real_link    String?   @db.VarChar(300)
+  web_path       String?   @db.VarChar(255)
+
+  @@index([fidx], map: "IDX_fidx")
+}
+
+model cms_file_info {
+  seq                        BigInt    @id @default(autoincrement())
+  create_date                DateTime? @db.DateTime(6)
+  create_user_id             String?   @db.VarChar(50)
+  update_date                DateTime? @db.DateTime(6)
+  update_user_id             String?   @db.VarChar(50)
+  daglo_trans_request        String?   @db.VarChar(200)
+  daglo_trans_request_result String?   @db.VarChar(200)
+  daglo_trans_response       String?   @db.LongText
+  description                String?   @db.LongText
+  description_origin         String?   @db.LongText
+  fidx                       BigInt?
+  file_status                String?   @db.VarChar(20)
+  file_target                String    @default("CMS") @db.VarChar(20)
+  openai_readable_request    String?   @db.LongText
+  openai_readable_response   String?   @db.LongText
+  openai_summarize_request   String?   @db.LongText
+  openai_summarize_response  String?   @db.LongText
+  summary                    String?   @db.LongText
+
+  @@index([file_target, fidx], map: "IDX_TARGET_FIDX")
+}
+
+model cms_file_video {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  fidx           BigInt
+  file_target    String    @default("CMS") @db.VarChar(20)
+  filesize       BigInt?
+  realfilename   String?   @db.VarChar(100)
+  res_height     BigInt?
+  res_width      BigInt?
+
+  @@index([fidx], map: "IDX_fidx")
+}
+
+model cms_page_content {
+  seq            BigInt         @id @default(autoincrement())
+  create_date    DateTime?      @db.DateTime(6)
+  create_user_id String?        @db.VarChar(50)
+  update_date    DateTime?      @db.DateTime(6)
+  update_user_id String?        @db.VarChar(50)
+  content_html   String?        @db.LongText
+  content_text   String?        @db.LongText
+  page_code      String?        @db.VarChar(50)
+  cms_page_info  cms_page_info? @relation(fields: [page_code], references: [page_code], onDelete: Restrict, onUpdate: Restrict, map: "FKbn324yfrrrx9epitvq8mj3p7v")
+
+  @@index([page_code], map: "index_page_code")
+}
+
+model cms_page_info {
+  pidx             BigInt             @id @default(autoincrement())
+  create_date      DateTime?          @db.DateTime(6)
+  create_user_id   String?            @db.VarChar(50)
+  update_date      DateTime?          @db.DateTime(6)
+  update_user_id   String?            @db.VarChar(50)
+  is_display       Boolean?           @db.Bit(1)
+  page_code        String?            @unique(map: "UK_stlo2b4v7a3cvmqr4l8ybxxr9") @db.VarChar(50)
+  page_name        String?            @db.VarChar(100)
+  cms_page_content cms_page_content[]
+
+  @@index([page_code], map: "index_page_code")
+}
+
+model common_code {
+  code                                          String       @id @db.VarChar(40)
+  create_date                                   DateTime?    @db.DateTime(6)
+  create_user_id                                String?      @db.VarChar(50)
+  update_date                                   DateTime?    @db.DateTime(6)
+  update_user_id                                String?      @db.VarChar(50)
+  code_level                                    Int?
+  code_name                                     String?      @db.VarChar(100)
+  code_order                                    Int?
+  code_text                                     String?      @db.VarChar(255)
+  ext1                                          String?      @db.VarChar(255)
+  ext2                                          String?      @db.VarChar(255)
+  ext3                                          String?      @db.VarChar(255)
+  ext4                                          String?      @db.VarChar(255)
+  ext5                                          String?      @db.VarChar(255)
+  menu_icon                                     String?      @db.VarChar(255)
+  menu_link                                     String?      @db.VarChar(255)
+  shop_goods_shop_goods_cate_codeTocommon_code  shop_goods[] @relation("shop_goods_cate_codeTocommon_code")
+  shop_goods_shop_goods_brand_codeTocommon_code shop_goods[] @relation("shop_goods_brand_codeTocommon_code")
+  shop_goods_shop_goods_maker_codeTocommon_code shop_goods[] @relation("shop_goods_maker_codeTocommon_code")
+
+  @@index([code_order], map: "IDX_codeorder_desc")
+  @@index([code], map: "pk_code_idx")
+}
+
+model company_account {
+  caidx             BigInt       @id @default(autoincrement())
+  create_date       DateTime?    @db.DateTime(6)
+  create_user_id    String?      @db.VarChar(50)
+  update_date       DateTime?    @db.DateTime(6)
+  update_user_id    String?      @db.VarChar(50)
+  address1          String?      @db.VarChar(255)
+  address2          String?      @db.VarChar(255)
+  auth_email        Boolean      @db.Bit(1)
+  auth_string       String?      @db.VarChar(100)
+  birthday          String?      @db.VarChar(20)
+  co_code           String       @db.VarChar(20)
+  co_email_id       String?      @unique(map: "UK_odyor1wi8lihww76cmjv2fy2l") @db.VarChar(50)
+  co_emp_no         String?      @db.VarChar(20)
+  company_name      String?      @db.VarChar(50)
+  device_token      String?      @db.VarChar(255)
+  employee_status   String?      @db.VarChar(255)
+  gender            String?      @db.VarChar(1)
+  interest_keyword  String?      @db.VarChar(255)
+  is_admin          Boolean?     @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_marketing      Boolean      @db.Bit(1)
+  is_parent         Boolean?     @default(dbgenerated("b'1'")) @db.Bit(1)
+  is_privacy_policy Boolean      @db.Bit(1)
+  is_sns_login      Boolean      @db.Bit(1)
+  is_use            Boolean      @default(dbgenerated("b'1'")) @db.Bit(1)
+  is_use_terms      Boolean      @db.Bit(1)
+  job_code          String?      @db.VarChar(50)
+  last_login_date   DateTime?    @db.DateTime(6)
+  nick_name         String?      @db.VarChar(30)
+  out_date          DateTime?    @db.DateTime(6)
+  parent_id         String?      @db.VarChar(50)
+  passwd            String?      @db.VarChar(200)
+  phone             String?      @db.VarChar(255)
+  position_name     String?      @db.VarChar(50)
+  profile_img_fidx  BigInt?
+  profile_src       String?      @db.VarChar(255)
+  rate_code         String?      @db.VarChar(20)
+  skill_code        String?      @db.VarChar(50)
+  sns_id            String?      @db.VarChar(100)
+  sns_service       String?      @db.VarChar(10)
+  team_code         String?      @db.VarChar(20)
+  team_name         String?      @db.VarChar(50)
+  user_mail         String?      @db.VarChar(50)
+  user_name         String?      @db.VarChar(20)
+  zipcode           String?      @db.VarChar(255)
+  company_info      company_info @relation(fields: [co_code], references: [co_code], onUpdate: Restrict, map: "FK7npaotiw4098jmykeb4btavdm")
+
+  @@index([co_code], map: "IDX_CoCode")
+  @@index([co_code, co_email_id], map: "IDX_coCode_coEmailId")
+}
+
+model company_account_file {
+  fidx           BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  cnt_download   BigInt    @default(0)
+  cnt_play       BigInt    @default(0)
+  cnt_show       BigInt    @default(0)
+  duration       BigInt    @default(0)
+  ex_idx         BigInt?
+  ex_mode        String?   @db.VarChar(50)
+  file_status    String?   @db.VarChar(20)
+  fileext        String?   @db.VarChar(10)
+  filename       String?   @db.VarChar(100)
+  filesize       BigInt
+  is_s3          Boolean   @db.Bit(1)
+  realfilename   String?   @db.VarChar(100)
+  s3real_link    String?   @db.VarChar(300)
+  web_path       String?   @db.VarChar(100)
+}
+
+model company_account_record {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  record_date    String    @db.VarChar(20)
+  user_agent     String?   @db.LongText
+  user_id        String    @db.VarChar(50)
+
+  @@index([user_id], map: "IDX_userId")
+}
+
+model company_attendance {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  record_date    String    @db.VarChar(20)
+  remarks        String?   @db.VarChar(100)
+  status         String?   @db.VarChar(10)
+  user_agent     String?   @db.LongText
+  user_id        String    @db.VarChar(50)
+
+  @@index([user_id], map: "IDX_userId")
+}
+
+model company_info {
+  cidx                  BigInt            @id @default(autoincrement())
+  create_date           DateTime?         @db.DateTime(6)
+  create_user_id        String?           @db.VarChar(50)
+  update_date           DateTime?         @db.DateTime(6)
+  update_user_id        String?           @db.VarChar(50)
+  active_text           String?           @db.LongText
+  address1              String?           @db.VarChar(100)
+  address2              String?           @db.VarChar(150)
+  area_code             String?           @db.VarChar(20)
+  bg_color1             String?           @db.VarChar(20)
+  biz_number            String?           @db.VarChar(255)
+  ceo_name              String?           @db.VarChar(20)
+  co_code               String            @unique(map: "UK_39o0hxkbqr5o1b3r9fh07j4ba") @db.VarChar(10)
+  co_name               String?           @db.VarChar(20)
+  cs_email              String?           @db.VarChar(50)
+  cs_fax                String?           @db.VarChar(50)
+  cs_name               String?           @db.VarChar(20)
+  cs_tel                String?           @db.VarChar(20)
+  is_ios_shop           Boolean           @db.Bit(1)
+  is_ios_sns            Boolean           @db.Bit(1)
+  job_code_list         String?           @db.LongText
+  max_point_standard    String            @default("MONTH") @db.VarChar(255)
+  max_points            Int
+  online_sale_report_no String?           @db.VarChar(100)
+  privacy_officer       String?           @db.VarChar(120)
+  private_keep_year     BigInt
+  team_code             String?           @db.VarChar(20)
+  zipcode               String?           @db.VarChar(7)
+  company_account       company_account[]
+
+  @@index([co_code], map: "IDX_CoCode")
+}
+
+model edu_answer {
+  ea_idx         BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  content_type   String?   @db.VarChar(255)
+  ec_idx         BigInt?
+  em_idx         BigInt?
+  is_complete    Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_result      Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  user_id        String?   @db.VarChar(100)
+
+  @@index([ec_idx, user_id], map: "IDX_ecidx_userid")
+  @@index([em_idx, user_id], map: "IDX_emidx_userid")
+}
+
+model edu_answer_card {
+  ac_idx         BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  ea_idx         BigInt    @default(0)
+  user_id        String?   @db.VarChar(100)
+
+  @@index([ac_idx], map: "IDX_SEQ")
+}
+
+model edu_answer_file {
+  af_idx         BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  ea_idx         BigInt?
+  fidx           BigInt?
+  is_download    Boolean?  @db.Bit(1)
+  user_id        String?   @db.VarChar(100)
+}
+
+model edu_answer_mov {
+  am_idx         BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  complete_date  DateTime? @db.DateTime(6)
+  current_times  Int?
+  ea_idx         BigInt?
+  user_id        String?   @db.VarChar(100)
+
+  @@index([ea_idx, user_id], map: "IDX_eaIdx_userId")
+  @@index([user_id], map: "IDX_userId")
+}
+
+model edu_answer_poll {
+  ap_idx         BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  ea_idx         BigInt?
+  is_answered    Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  qp_idx         BigInt?
+  sel_fidxs      String?   @db.VarChar(100)
+  sel_ta_idxs    String?   @db.VarChar(255)
+  short_txt      String?   @db.LongText
+  user_id        String?   @db.VarChar(100)
+
+  @@index([ap_idx], map: "IDX_SEQ")
+  @@index([user_id, ea_idx], map: "IDX_userId_eaIdx")
+}
+
+model edu_answer_record {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  content_type   String?   @db.VarChar(50)
+  ec_idx         BigInt
+  mode           String    @db.VarChar(50)
+  record_date    String    @db.VarChar(20)
+  user_id        String    @db.VarChar(50)
+
+  @@index([ec_idx], map: "IDX_ecIdx")
+  @@index([user_id], map: "IDX_userId")
+  @@index([user_id, ec_idx], map: "IDX_userId_ecIdx")
+}
+
+model edu_answer_review {
+  ar_idx         BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  ea_idx         BigInt?
+  rating         BigInt?
+  review_text    String?   @db.VarChar(255)
+
+  @@index([ar_idx], map: "IDX_SEQ")
+}
+
+model edu_answer_tst {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  ea_idx         BigInt?
+  is_correct     Boolean?  @db.Bit(1)
+  qt_idx         BigInt?
+  sel_ta_idxs    String?   @db.VarChar(255)
+  short_txt      String?   @db.VarChar(200)
+  user_id        String?   @db.VarChar(100)
+
+  @@index([qt_idx], map: "IDX_qtidx_asc")
+  @@index([user_id, ea_idx], map: "IDX_userId_eaIdx")
+}
+
+model edu_contents {
+  ec_idx         BigInt           @id @default(autoincrement())
+  create_date    DateTime?        @db.DateTime(6)
+  create_user_id String?          @db.VarChar(50)
+  update_date    DateTime?        @db.DateTime(6)
+  update_user_id String?          @db.VarChar(50)
+  content_type   String?          @db.VarChar(255)
+  em_idx         BigInt?
+  ordering       Int              @default(0)
+  teach_id       String?          @db.VarChar(100)
+  teach_name     String?          @db.VarChar(100)
+  edu_main       edu_main?        @relation(fields: [em_idx], references: [em_idx], onDelete: Restrict, onUpdate: Restrict, map: "FKc1xfck77neaj9n5qj6t3vcf61")
+  edu_quest_poll edu_quest_poll[]
+  edu_quest_tst  edu_quest_tst[]
+
+  @@index([em_idx], map: "FKc1xfck77neaj9n5qj6t3vcf61")
+}
+
+model edu_course {
+  cidx           BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  all_students   Boolean   @db.Bit(1)
+  cate_code      String?   @db.VarChar(20)
+  comment        String?   @db.VarChar(255)
+  end_date       String?   @db.VarChar(20)
+  schedule_mode  String?   @db.VarChar(20)
+  short_title    String?   @db.VarChar(20)
+  start_date     String?   @db.VarChar(20)
+  teacher_name   String?   @db.VarChar(255)
+  thumbnail      String?   @db.VarChar(200)
+  title          String?   @db.VarChar(255)
+}
+
+model edu_course_item {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  cidx           BigInt?
+  em_idx         BigInt?
+  ordering       Int
+
+  @@index([cidx, ordering], map: "IDX_cidx")
+  @@index([em_idx, ordering], map: "IDX_emIdx")
+}
+
+model edu_course_target {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  cidx           BigInt?
+  co_code        String?   @db.VarChar(20)
+  co_name        String?   @db.VarChar(20)
+  is_parent      Boolean   @db.Bit(1)
+  job_code       String?   @db.VarChar(20)
+  job_text       String?   @db.VarChar(20)
+  rate_code      String?   @db.VarChar(20)
+  rate_text      String?   @db.VarChar(50)
+  skill_code     String?   @db.VarChar(20)
+  skill_text     String?   @db.VarChar(20)
+  team_code      String?   @db.VarChar(20)
+  team_text      String?   @db.VarChar(50)
+  user_id        String?   @db.VarChar(50)
+  user_name      String?   @db.VarChar(50)
+}
+
+model edu_file {
+  fidx           BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  cnt_download   BigInt
+  cnt_play       BigInt
+  cnt_show       BigInt
+  duration       BigInt
+  ec_idx         BigInt
+  file_status    String?   @db.VarChar(20)
+  fileext        String?   @db.VarChar(10)
+  filename       String?   @db.VarChar(255)
+  filesize       BigInt
+  is_s3          Boolean   @db.Bit(1)
+  realfilename   String?   @db.VarChar(80)
+  s3real_link    String?   @db.VarChar(300)
+  web_path       String?   @db.VarChar(255)
+
+  @@index([ec_idx], map: "IDX_ecIdx")
+  @@index([fidx], map: "IDX_fidx")
+}
+
+model edu_file_card {
+  fidx           BigInt         @id @default(autoincrement())
+  create_date    DateTime?      @db.DateTime(6)
+  create_user_id String?        @db.VarChar(50)
+  update_date    DateTime?      @db.DateTime(6)
+  update_user_id String?        @db.VarChar(50)
+  cnt_download   BigInt
+  cnt_play       BigInt
+  cnt_show       BigInt
+  duration       BigInt
+  ec_idx         BigInt
+  file_status    String?        @db.VarChar(20)
+  fileext        String?        @db.VarChar(10)
+  filename       String?        @db.VarChar(255)
+  filesize       BigInt
+  is_s3          Boolean        @db.Bit(1)
+  ordering       BigInt         @default(0)
+  realfilename   String?        @db.VarChar(80)
+  s3real_link    String?        @db.VarChar(300)
+  web_path       String?        @db.VarChar(255)
+  edu_quest_card edu_quest_card @relation(fields: [ec_idx], references: [ec_idx], onUpdate: Restrict, map: "FK7x75nv2t1wxvxfskaca9hhp6o")
+
+  @@index([ec_idx], map: "IDX_ecIdx")
+  @@index([fidx], map: "IDX_fidx")
+}
+
+model edu_likes {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  em_idx         BigInt?
+  user_id        String?   @db.VarChar(100)
+
+  @@index([em_idx], map: "IDX_emIdx")
+  @@index([em_idx, user_id], map: "IDX_emIdx_userId")
+  @@index([user_id], map: "IDX_userId")
+}
+
+model edu_main {
+  em_idx         BigInt         @id @default(autoincrement())
+  create_date    DateTime?      @db.DateTime(6)
+  create_user_id String?        @db.VarChar(50)
+  update_date    DateTime?      @db.DateTime(6)
+  update_user_id String?        @db.VarChar(50)
+  all_students   Boolean        @db.Bit(1)
+  cate_code      String?        @db.VarChar(20)
+  content_text   String?        @db.LongText
+  count_config   Int
+  display_num    BigInt
+  edu_title      String?        @db.VarChar(150)
+  end_date       String?        @db.VarChar(20)
+  goal           String?        @db.LongText
+  introduce      String?        @db.LongText
+  is_display     Boolean?       @db.Bit(1)
+  is_major       Boolean?       @db.Bit(1)
+  is_step        Boolean        @default(dbgenerated("b'0'")) @db.Bit(1)
+  member_level   Int
+  num_left       Int
+  open_code      String?        @db.VarChar(20)
+  point          Int
+  schedule_mode  String?        @db.VarChar(20)
+  short_title    String?        @db.VarChar(20)
+  start_date     String?        @db.VarChar(20)
+  teach_id       String?        @db.VarChar(100)
+  teach_name     String?        @db.VarChar(100)
+  thumbnail      String?        @db.LongText
+  views          BigInt
+  edu_contents   edu_contents[]
+}
+
+model edu_main_html {
+  em_idx       BigInt  @id
+  content_html String? @db.LongText
+}
+
+model edu_main_students {
+  sidx           BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  check_date     DateTime? @db.DateTime(6)
+  complete_date  DateTime? @db.DateTime(6)
+  em_idx         BigInt?
+  is_complete    Boolean?  @db.Bit(1)
+  is_request     Boolean?  @db.Bit(1)
+  request_date   DateTime? @db.DateTime(6)
+  user_id        String?   @db.VarChar(255)
+
+  @@index([em_idx], map: "IDX_emidx")
+  @@index([em_idx, user_id], map: "IDX_emidx_userid")
+  @@index([user_id], map: "IDX_userid")
+}
+
+model edu_main_target {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  co_code        String?   @db.VarChar(20)
+  co_name        String?   @db.VarChar(20)
+  em_idx         BigInt?
+  is_parent      Boolean   @default(dbgenerated("b'1'")) @db.Bit(1)
+  job_code       String?   @db.VarChar(20)
+  job_text       String?   @db.VarChar(20)
+  rate_code      String?   @db.VarChar(20)
+  rate_text      String?   @db.VarChar(50)
+  skill_code     String?   @db.VarChar(20)
+  skill_text     String?   @db.VarChar(20)
+  team_code      String?   @db.VarChar(20)
+  team_text      String?   @db.VarChar(50)
+  user_id        String?   @db.VarChar(50)
+  user_name      String?   @db.VarChar(50)
+}
+
+model edu_quest_card {
+  ec_idx         BigInt          @id
+  create_date    DateTime?       @db.DateTime(6)
+  create_user_id String?         @db.VarChar(50)
+  update_date    DateTime?       @db.DateTime(6)
+  update_user_id String?         @db.VarChar(50)
+  card_desc      String?         @db.LongText
+  card_name      String?         @db.VarChar(50)
+  card_type      String?         @db.VarChar(10)
+  edu_file_card  edu_file_card[]
+}
+
+model edu_quest_file {
+  ec_idx         BigInt    @id
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  file_desc      String?   @db.LongText
+  file_title     String?   @db.VarChar(200)
+
+  @@index([ec_idx], map: "IDX_ecidx")
+}
+
+model edu_quest_mov {
+  ec_idx         BigInt    @id
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  hash_params    String?   @db.VarChar(200)
+  is_skip        Boolean?  @db.Bit(1)
+  is_speed       Boolean?  @db.Bit(1)
+  mov_fidx       BigInt    @default(0)
+  mov_thumb      String?   @db.VarChar(200)
+  mov_title      String?   @db.VarChar(150)
+  mov_type       String    @default("file") @db.VarChar(10)
+  mov_url        String?   @db.VarChar(200)
+  note           String?   @db.LongText
+  play_minutes   Int
+  play_seconds   Int
+
+  @@index([ec_idx], map: "IDX_ecIdx")
+}
+
+model edu_quest_mov_option {
+  ec_idx         BigInt    @id
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  ai_summary     String?   @db.LongText
+  script_text    String?   @db.LongText
+}
+
+model edu_quest_poll {
+  qp_idx             BigInt               @id @default(autoincrement())
+  create_date        DateTime?            @db.DateTime(6)
+  create_user_id     String?              @db.VarChar(50)
+  update_date        DateTime?            @db.DateTime(6)
+  update_user_id     String?              @db.VarChar(50)
+  ec_idx             BigInt?
+  ordering           BigInt               @default(0)
+  poll_desc          String?              @db.LongText
+  poll_title         String?              @db.VarChar(180)
+  poll_type          String?              @db.VarChar(20)
+  edu_contents       edu_contents?        @relation(fields: [ec_idx], references: [ec_idx], onDelete: Restrict, onUpdate: Restrict, map: "FKadhp8le96th2stdhb2pbculwg")
+  edu_quest_poll_ans edu_quest_poll_ans[]
+
+  @@index([ec_idx], map: "FKadhp8le96th2stdhb2pbculwg")
+}
+
+model edu_quest_poll_ans {
+  qpa_idx        BigInt          @id @default(autoincrement())
+  create_date    DateTime?       @db.DateTime(6)
+  create_user_id String?         @db.VarChar(50)
+  update_date    DateTime?       @db.DateTime(6)
+  update_user_id String?         @db.VarChar(50)
+  answer         String?         @db.VarChar(200)
+  ordering       BigInt          @default(0)
+  qp_idx         BigInt?
+  edu_quest_poll edu_quest_poll? @relation(fields: [qp_idx], references: [qp_idx], onDelete: Restrict, onUpdate: Restrict, map: "FK5t9exmvbjn3quh4u2215jsm9g")
+
+  @@index([qp_idx], map: "FK5t9exmvbjn3quh4u2215jsm9g")
+  @@index([qpa_idx, ordering], map: "IDX_qpaIdx_ordering")
+}
+
+model edu_quest_poll_option {
+  ec_idx         BigInt    @id
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  is_file        Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  poll_desc      String?   @db.LongText
+  poll_title     String?   @db.VarChar(200)
+
+  @@index([ec_idx], map: "IDX_ecIdx")
+}
+
+model edu_quest_review {
+  ec_idx          BigInt    @id
+  create_date     DateTime? @db.DateTime(6)
+  create_user_id  String?   @db.VarChar(50)
+  update_date     DateTime? @db.DateTime(6)
+  update_user_id  String?   @db.VarChar(50)
+  is_length       Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_rating       Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  min_length      BigInt?   @default(0)
+  review_info_txt String?   @default("") @db.VarChar(100)
+
+  @@index([ec_idx], map: "IDX_ecIdx")
+}
+
+model edu_quest_tst {
+  qt_idx            BigInt              @id @default(autoincrement())
+  create_date       DateTime?           @db.DateTime(6)
+  create_user_id    String?             @db.VarChar(50)
+  update_date       DateTime?           @db.DateTime(6)
+  update_user_id    String?             @db.VarChar(50)
+  cate_code         String?             @db.VarChar(20)
+  direct_correct    Boolean             @db.Bit(1)
+  ec_idx            BigInt?
+  incorrect_txt     String?             @db.VarChar(200)
+  is_audio          Boolean             @db.Bit(1)
+  is_drag           Boolean             @db.Bit(1)
+  is_img            Boolean             @db.Bit(1)
+  is_ox             Boolean             @db.Bit(1)
+  is_shuffle        Boolean             @db.Bit(1)
+  is_txt            Boolean             @db.Bit(1)
+  ordering          BigInt              @default(0)
+  tst_audio_src     String?             @db.VarChar(200)
+  tst_desc          String?             @db.LongText
+  tst_img_src       String?             @db.VarChar(200)
+  tst_title         String?             @db.VarChar(180)
+  tst_type          String?             @db.VarChar(20)
+  edu_contents      edu_contents?       @relation(fields: [ec_idx], references: [ec_idx], onDelete: Restrict, onUpdate: Restrict, map: "FKl04uc82leatf4n8s1rtnu5cts")
+  edu_quest_tst_ans edu_quest_tst_ans[]
+
+  @@index([ec_idx], map: "IDX_ecIdx")
+  @@index([qt_idx], map: "IDX_qtIdx")
+}
+
+model edu_quest_tst_ans {
+  ta_idx           BigInt         @id @default(autoincrement())
+  create_date      DateTime?      @db.DateTime(6)
+  create_user_id   String?        @db.VarChar(50)
+  update_date      DateTime?      @db.DateTime(6)
+  update_user_id   String?        @db.VarChar(50)
+  answer           String?        @db.VarChar(200)
+  answer_audio_src String?        @db.VarChar(200)
+  answer_img       String?        @db.VarChar(200)
+  answer_img_src   String?        @db.VarChar(200)
+  is_correct       Boolean?       @db.Bit(1)
+  ordering         BigInt         @default(0)
+  qt_idx           BigInt?
+  edu_quest_tst    edu_quest_tst? @relation(fields: [qt_idx], references: [qt_idx], onDelete: Restrict, onUpdate: Restrict, map: "FK17utf1fndgsu9180xcaf98jqi")
+
+  @@index([qt_idx], map: "IDX_qtIdx")
+  @@index([ta_idx], map: "IDX_taIdx")
+}
+
+model edu_quest_tst_option {
+  ec_idx         BigInt    @id
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  cutoff_score   BigInt?   @default(0)
+  is_cutoff      Boolean   @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_rand_tst    Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  test_notice    String?   @db.LongText
+  test_title     String?   @db.VarChar(200)
+
+  @@index([ec_idx], map: "IDX_ecIdx_desc")
+}
+
+model edu_sked_account {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  co_email_id    String?   @db.VarChar(50)
+  course_idx     BigInt?
+  em_idx         BigInt?
+  end_date       String?   @db.VarChar(20)
+  schedule_mode  String?   @db.VarChar(20)
+  start_date     String?   @db.VarChar(20)
+
+  @@index([co_email_id], map: "IDX_COEMAILID")
+}
+
+model edu_sked_company {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  co_code        String?   @db.VarChar(20)
+  course_idx     BigInt?
+  em_idx         BigInt?
+  end_date       String?   @db.VarChar(20)
+  schedule_mode  String?   @db.VarChar(20)
+  start_date     String?   @db.VarChar(20)
+
+  @@index([co_code], map: "IDX_COCODE")
+}
+
+model edu_wishs {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  em_idx         BigInt?
+  user_id        String?   @db.VarChar(100)
+
+  @@index([em_idx], map: "IDX_emIdx")
+  @@index([em_idx, user_id], map: "IDX_emIdx_userId")
+  @@index([user_id], map: "IDX_userId")
+}
+
+model eland_transfer_policy {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  co_code        String?   @db.VarChar(50)
+  co_name        String?   @db.VarChar(50)
+  condition1     String?   @db.VarChar(300)
+  condition2     String?   @db.VarChar(300)
+  query_str      String?   @db.VarChar(500)
+}
+
+model eland_transfer_user {
+  co_email_id             String    @id @db.VarChar(255)
+  create_date             DateTime? @db.DateTime(6)
+  create_user_id          String?   @db.VarChar(50)
+  update_date             DateTime? @db.DateTime(6)
+  update_user_id          String?   @db.VarChar(50)
+  ldap_entry_ou           String?   @db.VarChar(255)
+  upn                     String?   @db.VarChar(255)
+  birthday                String?   @db.VarChar(255)
+  bu_code                 String?   @db.VarChar(255)
+  bu_name                 String?   @db.VarChar(255)
+  cmp_code                String?   @db.VarChar(255)
+  cmp_name                String?   @db.VarChar(255)
+  created                 String?   @db.VarChar(255)
+  created_date            String?   @db.VarChar(255)
+  created_user            String?   @db.VarChar(255)
+  date_joining_company    String?   @db.VarChar(255)
+  eland_emp_group         String?   @db.VarChar(255)
+  eland_emp_group_name    String?   @db.VarChar(255)
+  email                   String?   @db.VarChar(255)
+  emp_code                String?   @db.VarChar(255)
+  emp_name                String?   @db.VarChar(255)
+  employee_id             String?   @db.VarChar(255)
+  employee_status         String?   @db.VarChar(255)
+  exemail                 String?   @db.VarChar(255)
+  first_name              String?   @db.VarChar(255)
+  group_code              String?   @db.VarChar(255)
+  group_name              String?   @db.VarChar(255)
+  hired_date              String?   @db.VarChar(255)
+  home_address            String?   @db.VarChar(255)
+  initial_password        String?   @db.VarChar(255)
+  job_code                String?   @db.VarChar(255)
+  job_name                String?   @db.VarChar(255)
+  kost_center             String?   @db.VarChar(255)
+  last_name               String?   @db.VarChar(255)
+  lunar                   String?   @db.VarChar(255)
+  mobile                  String?   @db.VarChar(255)
+  modified                String?   @db.VarChar(255)
+  modified_date           String?   @db.VarChar(255)
+  modified_user           String?   @db.VarChar(255)
+  name                    String?   @db.VarChar(255)
+  nation_code             String?   @db.VarChar(255)
+  occupations_code        String?   @db.VarChar(255)
+  occupations_name        String?   @db.VarChar(255)
+  personnel_area_sub_code String?   @db.VarChar(255)
+  personnel_area_sub_name String?   @db.VarChar(255)
+  position_code           String?   @db.VarChar(255)
+  position_level_code     String?   @db.VarChar(255)
+  position_level_name     String?   @db.VarChar(255)
+  position_name           String?   @db.VarChar(255)
+  profit_loss_center      String?   @db.VarChar(255)
+  profit_loss_code        String?   @db.VarChar(255)
+  ref_person_num          String?   @db.VarChar(255)
+  rejoin_employee_id      String?   @db.VarChar(255)
+  retired_date            String?   @db.VarChar(255)
+  sap_com_code            String?   @db.VarChar(255)
+  sex                     String?   @db.VarChar(255)
+  task_code               String?   @db.VarChar(255)
+  task_name               String?   @db.VarChar(255)
+  user_mail               String?   @db.VarChar(255)
+  username                String?   @db.VarChar(255)
+}
+
+model notif_kakaotalk {
+  kidx             BigInt    @id @default(autoincrement())
+  create_date      DateTime? @db.DateTime(6)
+  create_user_id   String?   @db.VarChar(50)
+  update_date      DateTime? @db.DateTime(6)
+  update_user_id   String?   @db.VarChar(50)
+  additional_title String?   @db.VarChar(150)
+  attachment       String?   @db.VarChar(1000)
+  content          String?   @db.VarChar(1000)
+  fail_content     String?   @db.VarChar(1000)
+  is_attachment    Boolean?  @db.Bit(1)
+  is_execute       Boolean?  @db.Bit(1)
+  is_fail_content  Boolean?  @db.Bit(1)
+  is_reserve       Boolean?  @db.Bit(1)
+  is_send          Boolean?  @db.Bit(1)
+  reservedt        DateTime? @db.DateTime(6)
+  rt_idx           BigInt?
+  template_code    String?   @db.VarChar(100)
+  title            String?   @db.VarChar(150)
+
+  @@index([kidx], map: "IDX_kidx")
+}
+
+model notif_kakaotalk_receiver {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  is_send        Boolean?  @db.Bit(1)
+  kidx           BigInt
+  message_id     String?   @db.VarChar(255)
+  receiver_id    String?   @db.VarChar(100)
+  receiver_phone String?   @db.VarChar(100)
+  result_code    String?   @db.VarChar(255)
+  result_status  String?   @db.VarChar(255)
+  result_txt     String?   @db.VarChar(100)
+  rt_idx         BigInt?
+  senddt         DateTime? @db.DateTime(6)
+
+  @@index([kidx], map: "IDX_kidx")
+  @@index([receiver_id], map: "IDX_receiverId")
+}
+
+model notif_mail {
+  midx           BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  content        String?   @db.LongText
+  image_type     String?   @db.VarChar(255)
+  image_url      String?   @db.VarChar(255)
+  is_browser     Boolean?  @db.Bit(1)
+  is_execute     Boolean?  @db.Bit(1)
+  is_reserve     Boolean?  @db.Bit(1)
+  is_send        Boolean?  @db.Bit(1)
+  reservedt      DateTime? @db.DateTime(6)
+  rt_idx         BigInt?
+  target_link    String?   @db.VarChar(200)
+  title          String?   @db.VarChar(150)
+
+  @@index([midx], map: "IDX_midx")
+}
+
+model notif_mail_receiver {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  content_html   String?   @db.LongText
+  is_send        Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  midx           BigInt?
+  receiver_id    String?   @db.VarChar(100)
+  receiver_mail  String?   @db.VarChar(100)
+  rt_idx         BigInt?
+  senddt         DateTime? @db.DateTime(6)
+  send_result    String?   @db.LongText
+  title          String?   @db.VarChar(200)
+  user_id        String?   @db.VarChar(100)
+
+  @@index([midx], map: "IDX_midx")
+  @@index([receiver_id], map: "IDX_receiverId")
+}
+
+model notif_message {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  content_text   String?   @db.VarChar(500)
+  is_execute     Boolean?  @db.Bit(1)
+  is_read        Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_reserve     Boolean?  @db.Bit(1)
+  is_send        Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  receiver_id    String    @db.VarChar(100)
+  reservedt      DateTime? @db.DateTime(6)
+  rt_idx         BigInt?
+  title          String?   @db.VarChar(200)
+  user_id        String?   @db.VarChar(100)
+}
+
+model notif_push {
+  pidx           BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  content        String?   @db.VarChar(200)
+  image_type     String?   @db.VarChar(255)
+  image_url      String?   @db.VarChar(255)
+  is_browser     Boolean?  @db.Bit(1)
+  is_execute     Boolean?  @db.Bit(1)
+  is_reserve     Boolean?  @db.Bit(1)
+  is_send        Boolean?  @db.Bit(1)
+  reservedt      DateTime? @db.DateTime(6)
+  rt_idx         BigInt?
+  target_link    String?   @db.VarChar(200)
+  title          String?   @db.VarChar(150)
+
+  @@index([pidx], map: "IDX_pidx")
+}
+
+model notif_push_receiver {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  device_token   String?   @db.VarChar(255)
+  is_send        Boolean?  @db.Bit(1)
+  pidx           BigInt
+  receiver_id    String?   @db.VarChar(100)
+  result_txt     String?   @db.VarChar(100)
+  senddt         DateTime? @db.DateTime(6)
+
+  @@index([receiver_id], map: "IDX_pidx")
+  @@index([receiver_id], map: "IDX_receiverId")
+}
+
+model notif_reserve {
+  rv_idx         BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  is_kakao       Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_mail        Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_message     Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_push        Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  kakao_json     String?   @db.LongText
+  mail_json      String?   @db.LongText
+  message_json   String?   @db.LongText
+  notif_code     String?   @db.VarChar(40)
+  notif_status   String    @default("WAIT") @db.VarChar(20)
+  push_json      String?   @db.LongText
+  reserve_date   String?   @db.VarChar(20)
+}
+
+model notif_result {
+  rt_idx              BigInt    @id @default(autoincrement())
+  create_date         DateTime? @db.DateTime(6)
+  create_user_id      String?   @db.VarChar(50)
+  update_date         DateTime? @db.DateTime(6)
+  update_user_id      String?   @db.VarChar(50)
+  is_kakao            Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_mail             Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_message          Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  is_push             Boolean?  @default(dbgenerated("b'0'")) @db.Bit(1)
+  kakao_json          String?   @db.LongText
+  kakao_result        String?   @db.VarChar(255)
+  kakao_result_json   String?   @db.LongText
+  mail_json           String?   @db.LongText
+  mail_result         String?   @db.VarChar(255)
+  mail_result_json    String?   @db.LongText
+  message_json        String?   @db.LongText
+  message_result      String?   @db.VarChar(255)
+  message_result_json String?   @db.LongText
+  notif_code          String?   @db.VarChar(40)
+  push_json           String?   @db.LongText
+  push_result         String?   @db.VarChar(255)
+  push_result_json    String?   @db.LongText
+  reserve_date        String?   @db.VarChar(20)
+  rv_idx              BigInt?
+  sent_date           String?   @db.VarChar(20)
+}
+
+model notif_target {
+  seq            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  co_code        String?   @db.VarChar(20)
+  co_name        String?   @db.VarChar(20)
+  job_code       String?   @db.VarChar(20)
+  job_text       String?   @db.VarChar(20)
+  rate_code      String?   @db.VarChar(20)
+  rate_text      String?   @db.VarChar(50)
+  rtidx          BigInt?
+  rvidx          BigInt?
+  skill_code     String?   @db.VarChar(20)
+  skill_text     String?   @db.VarChar(20)
+  team_code      String?   @db.VarChar(20)
+  team_text      String?   @db.VarChar(50)
+  user_id        String?   @db.VarChar(50)
+  user_name      String?   @db.VarChar(50)
+}
+
+model notif_template {
+  seq                        BigInt    @id @default(autoincrement())
+  create_date                DateTime? @db.DateTime(6)
+  create_user_id             String?   @db.VarChar(50)
+  update_date                DateTime? @db.DateTime(6)
+  update_user_id             String?   @db.VarChar(50)
+  code                       String?   @db.VarChar(40)
+  description                String?   @db.LongText
+  is_kakao_template          Boolean?  @default(dbgenerated("b'1'")) @db.Bit(1)
+  is_mail_template           Boolean?  @default(dbgenerated("b'1'")) @db.Bit(1)
+  is_message_template        Boolean?  @default(dbgenerated("b'1'")) @db.Bit(1)
+  is_push_template           Boolean?  @default(dbgenerated("b'1'")) @db.Bit(1)
+  kakao_additional_title_tpl String?   @db.VarChar(200)
+  kakao_attachment           String?   @db.LongText
+  kakao_title_tpl            String?   @db.VarChar(200)
+  kakao_tpl                  String?   @db.LongText
+  mail_title_tpl             String?   @db.VarChar(200)
+  mail_tpl                   String?   @db.LongText
+  message_title_tpl          String?   @db.VarChar(200)
+  message_tpl                String?   @db.LongText
+  push_title_tpl             String?   @db.VarChar(200)
+  push_tpl                   String?   @db.LongText
+  template_code              String?   @db.VarChar(255)
+}
+
+model point_account {
+  idx            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  action_code    String?   @default("S") @db.VarChar(1)
+  bidx           BigInt
+  cate_code      String?   @db.VarChar(20)
+  detail_desc    String?   @db.VarChar(100)
+  ec_idx         BigInt
+  em_idx         BigInt
+  month          Int?
+  point          Int
+  point_type     String?   @default("EDU") @db.VarChar(20)
+  policy_idx     BigInt
+  title          String?   @db.VarChar(100)
+  user_id        String?   @db.VarChar(50)
+  year           Int?
+
+  @@index([user_id], map: "IDX_userId")
+}
+
+model point_deduction {
+  idx            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  co_code        String?   @db.VarChar(150)
+  co_emp_no      String?   @db.VarChar(20)
+  co_name        String?   @db.VarChar(20)
+  month          Int?
+  paidx          BigInt
+  point          Int
+  quarter        Int?
+  user_id        String?   @db.VarChar(50)
+  user_name      String?   @db.VarChar(20)
+  year           Int?
+}
+
+model point_policy {
+  idx            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  action_code    String?   @db.VarChar(1)
+  cate_code      String?   @db.VarChar(20)
+  detail_desc    String?   @db.VarChar(200)
+  is_use         Boolean   @db.Bit(1)
+  point          Int
+  point_type     String?   @default("EDU") @db.VarChar(20)
+  policy_code    String?   @db.VarChar(50)
+  title          String?   @db.VarChar(50)
+}
+
+model point_policy_history {
+  idx         BigInt  @id @default(autoincrement())
+  policy_code String? @db.VarChar(50)
+  policy_idx  BigInt
+  post_data   String? @db.LongText
+  prev_data   String? @db.LongText
+}
+
+model poll_ask {
+  paidx            BigInt             @id @default(autoincrement())
+  create_date      DateTime?          @db.DateTime(6)
+  create_user_id   String?            @db.VarChar(50)
+  update_date      DateTime?          @db.DateTime(6)
+  update_user_id   String?            @db.VarChar(50)
+  ask_audio_src    String?            @db.VarChar(200)
+  ask_desc         String?            @db.LongText
+  ask_img_src      String?            @db.VarChar(200)
+  ask_title        String?            @db.VarChar(180)
+  ask_type         String?            @db.VarChar(20)
+  is_audio         Boolean            @db.Bit(1)
+  is_img           Boolean            @db.Bit(1)
+  is_multi         Boolean            @db.Bit(1)
+  is_shuffle       Boolean            @db.Bit(1)
+  is_txt           Boolean            @db.Bit(1)
+  ordering         BigInt?            @default(0)
+  skill_code       String?            @db.VarChar(20)
+  pidx             BigInt
+  poll_main        poll_main          @relation(fields: [pidx], references: [pidx], onUpdate: Restrict, map: "FKcx5gltwubrhhfiblcpc7ud7vr")
+  poll_ask_answers poll_ask_answers[]
+
+  @@index([paidx], map: "IDX_paidx")
+  @@index([pidx], map: "IDX_pidx")
+}
+
+model poll_ask_answers {
+  paaidx                  BigInt                    @id @default(autoincrement())
+  create_date             DateTime?                 @db.DateTime(6)
+  create_user_id          String?                   @db.VarChar(50)
+  update_date             DateTime?                 @db.DateTime(6)
+  update_user_id          String?                   @db.VarChar(50)
+  answer                  String?                   @db.VarChar(200)
+  answer_audio_src        String?                   @db.VarChar(200)
+  answer_img_src          String?                   @db.VarChar(200)
+  is_short                Boolean?                  @db.Bit(1)
+  ordering                BigInt?                   @default(0)
+  score                   Int?
+  paidx                   BigInt
+  poll_ask                poll_ask                  @relation(fields: [paidx], references: [paidx], onDelete: Cascade, onUpdate: Restrict, map: "FK7vkndmaywcbxvn89jv43xdg8h")
+  poll_respondent_answers poll_respondent_answers[]
+
+  @@index([paidx], map: "FK7vkndmaywcbxvn89jv43xdg8h")
+}
+
+model poll_main {
+  pidx                 BigInt                 @id @default(autoincrement())
+  create_date          DateTime?              @db.DateTime(6)
+  create_user_id       String?                @db.VarChar(50)
+  update_date          DateTime?              @db.DateTime(6)
+  update_user_id       String?                @db.VarChar(50)
+  content_text         String?                @db.LongText
+  is_all_targets       Boolean?               @db.Bit(1)
+  point                Int
+  poll_end_date        DateTime?              @db.DateTime(6)
+  poll_start_date      DateTime?              @db.DateTime(6)
+  poll_title           String?                @db.VarChar(150)
+  poll_ask             poll_ask[]
+  poll_main_respondent poll_main_respondent[]
+  poll_target          poll_target[]
+}
+
+model poll_main_respondent {
+  pridx                   BigInt                    @id @default(autoincrement())
+  create_date             DateTime?                 @db.DateTime(6)
+  create_user_id          String?                   @db.VarChar(50)
+  update_date             DateTime?                 @db.DateTime(6)
+  update_user_id          String?                   @db.VarChar(50)
+  is_complete             Boolean?                  @db.Bit(1)
+  job_code                String?                   @db.VarChar(20)
+  user_id                 String?                   @db.VarChar(255)
+  pidx                    BigInt
+  poll_main               poll_main                 @relation(fields: [pidx], references: [pidx], onUpdate: Restrict, map: "FK988sbrf4s3ah31th59wji1839")
+  poll_respondent_answers poll_respondent_answers[]
+  poll_result             poll_result[]
+
+  @@index([pidx], map: "FK988sbrf4s3ah31th59wji1839")
+}
+
+model poll_respondent_answers {
+  praidx               BigInt               @id @default(autoincrement())
+  create_date          DateTime?            @db.DateTime(6)
+  create_user_id       String?              @db.VarChar(50)
+  update_date          DateTime?            @db.DateTime(6)
+  update_user_id       String?              @db.VarChar(50)
+  answer_short         String?              @db.VarChar(255)
+  paaidx               BigInt?
+  pridx                BigInt
+  poll_ask_answers     poll_ask_answers?    @relation(fields: [paaidx], references: [paaidx], onDelete: Restrict, onUpdate: Restrict, map: "FK178eskob0ea8bwg27lkqr6xbw")
+  poll_main_respondent poll_main_respondent @relation(fields: [pridx], references: [pridx], onUpdate: Restrict, map: "FKbskt5tr79hyvdi0aiolxgm07j")
+
+  @@index([paaidx], map: "FK178eskob0ea8bwg27lkqr6xbw")
+  @@index([pridx], map: "FKbskt5tr79hyvdi0aiolxgm07j")
+}
+
+model poll_result {
+  prsidx               BigInt               @id @default(autoincrement())
+  create_date          DateTime?            @db.DateTime(6)
+  create_user_id       String?              @db.VarChar(50)
+  update_date          DateTime?            @db.DateTime(6)
+  update_user_id       String?              @db.VarChar(50)
+  merit                String?              @db.VarChar(10)
+  score                Int?
+  skill_code           String?              @db.VarChar(200)
+  pridx                BigInt
+  poll_main_respondent poll_main_respondent @relation(fields: [pridx], references: [pridx], onUpdate: Restrict, map: "FKqddk6w59iwwakxrxu332v9g8s")
+
+  @@index([pridx], map: "FKqddk6w59iwwakxrxu332v9g8s")
+}
+
+model poll_target {
+  ptidx          BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  co_code        String?   @db.VarChar(20)
+  co_name        String?   @db.VarChar(20)
+  job_code       String?   @db.VarChar(20)
+  job_text       String?   @db.VarChar(50)
+  rate_code      String?   @db.VarChar(20)
+  rate_text      String?   @db.VarChar(50)
+  team_code      String?   @db.VarChar(20)
+  team_text      String?   @db.VarChar(50)
+  user_id        String?   @db.VarChar(50)
+  user_name      String?   @db.VarChar(50)
+  pidx           BigInt
+  poll_main      poll_main @relation(fields: [pidx], references: [pidx], onUpdate: Restrict, map: "FKa7c4ukjef30nkh68s4rjxxijx")
+
+  @@index([pidx], map: "FKa7c4ukjef30nkh68s4rjxxijx")
+}
+
+model pro_req {
+  proidx               BigInt    @id @default(autoincrement())
+  create_date          DateTime? @db.DateTime(6)
+  create_user_id       String?   @db.VarChar(50)
+  update_date          DateTime? @db.DateTime(6)
+  update_user_id       String?   @db.VarChar(50)
+  admin_memo           String?   @db.LongText
+  chat_topic           String?   @db.LongText
+  job_code             String?   @db.VarChar(20)
+  official_keyword     String?   @db.VarChar(500)
+  permit_pro_date      DateTime? @db.DateTime(6)
+  pro_info             String?   @db.LongText
+  pro_level            Int
+  profile_img_src      String?   @db.VarChar(500)
+  recent_activity_date DateTime? @db.DateTime(6)
+  skill_code           String?   @db.VarChar(20)
+  strength_keyword     String?   @db.VarChar(500)
+  working_year         Int?
+  co_email_id          String?   @db.VarChar(50)
+
+  @@index([co_email_id], map: "IDX_coEmailId")
+}
+
+model pro_req_follow {
+  profidx        BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  follower_id    String?   @db.VarChar(255)
+  proidx         BigInt?
+
+  @@index([follower_id], map: "IDX_followerId")
+  @@index([proidx], map: "IDX_proidx")
+}
+
+model pro_req_question {
+  proqidx        BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  json           String?   @db.LongText
+}
+
+model pro_req_submit {
+  prosidx           BigInt    @id @default(autoincrement())
+  create_date       DateTime? @db.DateTime(6)
+  create_user_id    String?   @db.VarChar(50)
+  update_date       DateTime? @db.DateTime(6)
+  update_user_id    String?   @db.VarChar(50)
+  activity_code     String?   @db.VarChar(20)
+  admin_memo        String?   @db.LongText
+  current_pro_rate  String    @db.VarChar(255)
+  example_file_fidx BigInt?
+  example_file_src  String?   @db.VarChar(500)
+  job_code          String?   @db.VarChar(20)
+  profile_img_fidx  BigInt?
+  profile_img_src   String?   @db.VarChar(500)
+  reject_reason     String?   @db.LongText
+  request_answer    String?   @db.LongText
+  skill_code        String?   @db.VarChar(20)
+  strength_keyword  String?   @db.VarChar(500)
+  working_year      Int?
+  co_email_id       String?   @db.VarChar(50)
+
+  @@index([co_email_id], map: "IDX_coEmailId")
+}
+
+model review_main {
+  ridx              BigInt    @id @default(autoincrement())
+  create_date       DateTime? @db.DateTime(6)
+  create_user_id    String?   @db.VarChar(50)
+  update_date       DateTime? @db.DateTime(6)
+  update_user_id    String?   @db.VarChar(50)
+  bidx              BigInt?
+  co_code           String?   @db.VarChar(100)
+  content           String?   @db.VarChar(500)
+  em_idx            BigInt?
+  feedback          BigInt?
+  is_pin            Boolean   @db.Bit(1)
+  is_use            Boolean   @db.Bit(1)
+  keyword_code_list String?   @db.VarChar(255)
+  rating            Int?
+  target_id         String?   @db.VarChar(255)
+  title             String    @db.VarChar(200)
+  writer            String?   @db.VarChar(255)
+
+  @@index([bidx], map: "IDX_bidx")
+  @@index([em_idx], map: "IDX_emIdx")
+  @@index([target_id], map: "IDX_targetId")
+}
+
+model search_keywords {
+  sid            Int       @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  input_value    String    @db.VarChar(100)
+  is_show        Boolean?  @db.Bit(1)
+  keywords       String?   @db.VarChar(255)
+  place_holder   String    @db.VarChar(100)
+  search_option  String?   @db.VarChar(1)
+  title          String?   @db.VarChar(255)
+}
+
+model searchers {
+  sid            BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  checked_brand  String?   @db.VarChar(255)
+  checked_cate   String?   @db.VarChar(255)
+  checked_price  String?   @db.VarChar(255)
+  inner_text     String?   @db.VarChar(255)
+  inner_type     String?   @db.VarChar(255)
+  is_notice      String?   @db.VarChar(255)
+  is_use         String?   @db.VarChar(255)
+  max_price      Int
+  min_price      Int
+  outter_text    String?   @db.VarChar(255)
+  search_in      String?   @db.VarChar(255)
+  search_text    String?   @db.VarChar(255)
+  writer_key     String?   @db.VarChar(255)
+}
+
+model shop_board_data {
+  idx            Int         @id @default(autoincrement())
+  create_date    DateTime?   @db.DateTime(6)
+  create_user_id String?     @db.VarChar(50)
+  update_date    DateTime?   @db.DateTime(6)
+  update_user_id String?     @db.VarChar(50)
+  board_key      String?     @db.VarChar(255)
+  content_text   String?     @db.LongText
+  gid            BigInt
+  is_secret      Boolean?    @db.Bit(1)
+  is_use         Boolean?    @db.Bit(1)
+  ogid           Int
+  pidx           Int
+  qna_type       String?     @db.VarChar(255)
+  reg_ip         String?     @db.VarChar(255)
+  score          Int
+  this_down      Int
+  this_up        Int
+  title          String?     @db.VarChar(255)
+  views          Int
+  writer         String?     @db.VarChar(255)
+  writer_key     String?     @db.VarChar(255)
+  user_id        Int?
+  shop_file      shop_file[]
+}
+
+model shop_board_updown {
+  udidx          Int       @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  down           Int
+  tb_idx         Int
+  up             Int
+  userid         String?   @db.VarChar(255)
+}
+
+model shop_file {
+  fidx            BigInt           @id @default(autoincrement())
+  create_date     DateTime?        @db.DateTime(6)
+  create_user_id  String?          @db.VarChar(50)
+  update_date     DateTime?        @db.DateTime(6)
+  update_user_id  String?          @db.VarChar(50)
+  cnt_download    BigInt
+  cnt_play        BigInt
+  cnt_show        BigInt
+  duration        BigInt
+  fileext         String?          @db.VarChar(10)
+  filename        String?          @db.VarChar(255)
+  filesize        BigInt
+  gid             BigInt?
+  is_s3           Boolean          @db.Bit(1)
+  realfilename    String?          @db.VarChar(80)
+  s3real_link     String?          @db.VarChar(300)
+  web_path        String?          @db.VarChar(255)
+  tb_idx          Int?
+  shop_board_data shop_board_data? @relation(fields: [tb_idx], references: [idx], onDelete: Restrict, onUpdate: Restrict, map: "FKo3t3pea3b3mliqyuxstugg238")
+  shop_goods      shop_goods[]
+
+  @@index([tb_idx], map: "FKo3t3pea3b3mliqyuxstugg238")
+  @@index([fidx], map: "IDX_fidx")
+  @@index([gid], map: "IDX_gid")
+}
+
+model shop_goods {
+  gid                                            BigInt       @id @default(autoincrement())
+  create_date                                    DateTime?    @db.DateTime(6)
+  create_user_id                                 String?      @db.VarChar(50)
+  update_date                                    DateTime?    @db.DateTime(6)
+  update_user_id                                 String?      @db.VarChar(50)
+  barcode                                        String?      @db.VarChar(20)
+  base_price                                     Int
+  brand_code                                     String?      @db.VarChar(20)
+  cate_code                                      String?      @db.VarChar(20)
+  content_text                                   String?      @db.LongText
+  cost_price                                     Int
+  erpcode                                        String?      @db.VarChar(20)
+  event_per                                      Int
+  imp_idx                                        Int
+  inner_gids                                     String?      @db.VarChar(255)
+  is_digital                                     Boolean      @db.Bit(1)
+  is_free_delvy                                  Boolean?     @db.Bit(1)
+  is_import                                      Boolean      @db.Bit(1)
+  is_selling                                     Boolean?     @db.Bit(1)
+  is_set_goods                                   Boolean      @db.Bit(1)
+  is_stock                                       Boolean?     @db.Bit(1)
+  is_vat                                         Boolean      @db.Bit(1)
+  maker_code                                     String?      @db.VarChar(20)
+  pay_point                                      Int
+  save_point                                     Int
+  tags                                           String?      @db.VarChar(150)
+  thumb_idx                                      BigInt?
+  title                                          String?      @db.VarChar(50)
+  common_code_shop_goods_cate_codeTocommon_code  common_code? @relation("shop_goods_cate_codeTocommon_code", fields: [cate_code], references: [code], onDelete: Restrict, onUpdate: Restrict, map: "FK374osi759pd7pgpvoi4xuy7ip")
+  shop_file                                      shop_file?   @relation(fields: [thumb_idx], references: [fidx], onDelete: Restrict, onUpdate: Restrict, map: "FK89b0e7wkw9usafuxlq21kw7j")
+  common_code_shop_goods_brand_codeTocommon_code common_code? @relation("shop_goods_brand_codeTocommon_code", fields: [brand_code], references: [code], onDelete: Restrict, onUpdate: Restrict, map: "FKeo35mlpv99xfvi9svtu7r8a5j")
+  common_code_shop_goods_maker_codeTocommon_code common_code? @relation("shop_goods_maker_codeTocommon_code", fields: [maker_code], references: [code], onDelete: Restrict, onUpdate: Restrict, map: "FKlt3a05kb981up1h2cwvdf2oxn")
+
+  @@index([cate_code], map: "FK374osi759pd7pgpvoi4xuy7ip")
+  @@index([thumb_idx], map: "FK89b0e7wkw9usafuxlq21kw7j")
+  @@index([brand_code], map: "FK_brandCode")
+  @@index([maker_code], map: "FK_makerCode")
+}
+
+model shop_goods_content {
+  gid            BigInt    @id
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  content_html   String?   @db.LongText
+
+  @@index([gid], map: "IDX_gid")
+}
+
+model shop_goods_stocks {
+  sidx           BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  eidx           BigInt?
+  file_name      String?   @db.VarChar(255)
+  gid            BigInt
+  incomming      Int
+  incomming_type String?   @db.VarChar(20)
+  is_delete      String?   @db.VarChar(255)
+  is_memo        String?   @db.VarChar(255)
+  outgoing       Int
+  outgoing_type  String?   @db.VarChar(20)
+  quality        String?   @db.VarChar(20)
+
+  @@index([gid, quality, is_delete], map: "idx_gid_quality_isdelete")
+  @@index([quality, is_delete], map: "idx_quality_isdelete")
+}
+
+model shop_kko_alimtalk {
+  alimidx     Int     @id @default(autoincrement())
+  err_msg     String? @db.VarChar(255)
+  message     String? @db.VarChar(255)
+  msgidx      String? @db.VarChar(255)
+  org_code    String? @db.VarChar(255)
+  recipient   String? @db.VarChar(255)
+  reg_date    String? @db.VarChar(255)
+  state       String? @db.VarChar(255)
+  templt_code String? @db.VarChar(255)
+
+  @@index([state], map: "IDX_state")
+}
+
+model shop_kko_token {
+  tkidx          Int       @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  token          String?   @db.VarChar(255)
+}
+
+model shop_member_cart {
+  cidx           BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  count          Int
+  gid            BigInt
+  user_id        String    @db.VarChar(255)
+
+  @@index([gid], map: "fk_cart_gid")
+  @@index([user_id], map: "fk_cart_userId")
+}
+
+model shop_member_views {
+  vidx           BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  gid            BigInt
+  user_id        String    @db.VarChar(255)
+
+  @@index([gid], map: "fk_views_gid")
+  @@index([user_id], map: "fk_views_userId")
+}
+
+model shop_member_wish {
+  widx           BigInt    @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  gid            BigInt
+  user_id        String    @db.VarChar(255)
+
+  @@index([gid], map: "fk_wish_goods1_idx")
+  @@index([user_id], map: "fk_wish_member1_idx")
+}
+
+model shop_order_delivery {
+  fodid          Int       @id @default(autoincrement())
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  address1       String?   @db.VarChar(255)
+  address2       String?   @db.VarChar(255)
+  is_base        Boolean   @db.Bit(1)
+  member_userid  String?   @db.VarChar(255)
+  receiver_name  String?   @db.VarChar(255)
+  receiver_phone String?   @db.VarChar(255)
+  regdate        DateTime? @db.DateTime(6)
+  zipcode        String?   @db.VarChar(255)
+
+  @@index([member_userid], map: "fk_order_delivery_member1_idx")
+}
+
+model shop_order_goods {
+  idx                  BigInt    @id @default(autoincrement())
+  create_date          DateTime? @db.DateTime(6)
+  create_user_id       String?   @db.VarChar(50)
+  update_date          DateTime? @db.DateTime(6)
+  update_user_id       String?   @db.VarChar(50)
+  cart_id              BigInt
+  count                Int
+  delivery_corp        String?   @db.VarChar(255)
+  delivery_no          String?   @db.VarChar(255)
+  delivery_return_corp String?   @db.VarChar(255)
+  delivery_return_no   String?   @db.VarChar(255)
+  gid                  BigInt
+  oid                  String?   @db.VarChar(255)
+  pay_count            Int
+  pay_price            Int
+  price                Int
+  return_code          String?   @db.VarChar(30)
+  return_memo          String?   @db.VarChar(255)
+  stat                 Int
+  stat_code            String?   @db.VarChar(255)
+  stat_text            String?   @db.VarChar(255)
+  user_id              String?   @db.VarChar(50)
+}
+
+model shop_order_info {
+  oid                     String    @id @db.VarChar(255)
+  create_date             DateTime? @db.DateTime(6)
+  create_user_id          String?   @db.VarChar(50)
+  update_date             DateTime? @db.DateTime(6)
+  update_user_id          String?   @db.VarChar(50)
+  delivery_address1       String?   @db.VarChar(255)
+  delivery_address2       String?   @db.VarChar(255)
+  delivery_memo           String?   @db.VarChar(255)
+  delivery_price          Int
+  delivery_receiver_name  String?   @db.VarChar(255)
+  delivery_receiver_phone String?   @db.VarChar(255)
+  delivery_zipcode        String?   @db.VarChar(255)
+  delivery_zonecode       String?   @db.VarChar(255)
+  email                   String?   @db.VarChar(255)
+  order_corp              String?   @db.VarChar(20)
+  order_count             String?   @db.VarChar(255)
+  order_memo              String?   @db.VarChar(255)
+  order_name              String?   @db.VarChar(255)
+  order_price             Int
+  paid_type               String?   @db.VarChar(255)
+  pay_result_code         String?   @db.VarChar(255)
+  pay_result_msg          String?   @db.VarChar(255)
+  receipt                 String?   @db.VarChar(255)
+  return_code             String?   @db.VarChar(30)
+  return_memo             String?   @db.VarChar(255)
+  stat                    Int
+  stat_case               String?   @db.VarChar(255)
+  stat_text               String?   @db.VarChar(255)
+  use_point               Int
+  user_id                 String?   @db.VarChar(50)
+  vact_date               DateTime? @db.DateTime(6)
+  vact_num                String?   @db.VarChar(255)
+  co_email_id             BigInt?
+
+  @@index([user_id], map: "FK_userId")
+  @@index([stat], map: "IDX_stat")
+}
+
+model shop_order_inicispay_result {
+  ridx        BigInt  @id @default(autoincrement())
+  appl_date   String? @db.VarChar(8)
+  appl_num    String? @db.VarChar(16)
+  appl_time   String? @db.VarChar(6)
+  buyer_email String? @db.VarChar(60)
+  buyer_name  String? @db.VarChar(30)
+  buyer_tel   String? @db.VarChar(20)
+  event_code  String? @db.VarChar(3)
+  moid        String? @db.VarChar(40)
+  pay_method  String? @db.VarChar(10)
+  result_code String? @db.VarChar(10)
+  result_full String? @db.LongText
+  result_msg  String? @db.VarChar(120)
+  tid         String? @db.VarChar(40)
+  tot_price   String? @db.VarChar(20)
+}
+
+model shop_order_kakaopay_result {
+  ridx                BigInt  @id @default(autoincrement())
+  aid                 String? @db.VarChar(255)
+  amount_discount     String? @db.VarChar(255)
+  amount_point        String? @db.VarChar(255)
+  amount_tax_free     String? @db.VarChar(255)
+  amount_total        String? @db.VarChar(255)
+  amount_vat          String? @db.VarChar(255)
+  approved_at         String? @db.VarChar(255)
+  cid                 String? @db.VarChar(255)
+  created_at          String? @db.VarChar(255)
+  item_name           String? @db.VarChar(255)
+  partner_order_id    String? @db.VarChar(255)
+  partner_user_id     String? @db.VarChar(255)
+  payment_method_type String? @db.VarChar(255)
+  quantity            String? @db.VarChar(255)
+  result_full         String? @db.LongText
+  tid                 String? @db.VarChar(255)
+}
+
+model shop_order_parcel {
+  pidx           Int       @id
+  create_date    DateTime? @db.DateTime(6)
+  create_user_id String?   @db.VarChar(50)
+  update_date    DateTime? @db.DateTime(6)
+  update_user_id String?   @db.VarChar(50)
+  corp           String?   @db.VarChar(255)
+  link           String?   @db.VarChar(255)
+  link_mobile    String?   @db.VarChar(255)
+  parcel_number  String?   @db.VarChar(255)
+}
+
+model sys_api_log {
+  idx       BigInt    @id @default(autoincrement())
+  domain    String?   @db.VarChar(255)
+  params    String?   @db.LongText
+  pathname  String?   @db.LongText
+  query_str String?   @db.LongText
+  regdate   DateTime? @db.DateTime(6)
+  user_id   String?   @db.VarChar(255)
+}
+
+model sys_cms_log {
+  idx       BigInt    @id @default(autoincrement())
+  domain    String?   @db.VarChar(255)
+  params    String?   @db.LongText
+  pathname  String?   @db.LongText
+  query_str String?   @db.LongText
+  regdate   DateTime? @db.DateTime(6)
+  user_id   String?   @db.VarChar(255)
 }
