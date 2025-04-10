@@ -17,4 +17,10 @@ router.get('/', boardController.getBoards);
  */
 router.get('/one/:idx', boardController.getBoardOne);
 
+/**
+ * 게시물 저장
+ * POST
+ */
+router.post('/saveOne', boardController.setBoardOne);
+
 export default router;

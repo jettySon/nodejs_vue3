@@ -68,7 +68,10 @@ function goDetail(idx: number) {
     <div class="container mt-5">
         <div class="row mb-4">
             <div class="col">
-                <h2 class="mb-4">게시판</h2>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>게시글</h2>
+                    <a href="/board/write" class="btn btn-secondary">작성하기</a>
+                </div>
 
                 <!-- Loading indicator -->
                 <div v-if="loading" class="text-center">
@@ -151,6 +154,7 @@ function goDetail(idx: number) {
                                 </a>
                             </li>
                         </ul>
+
                     </nav>
                 </div>
             </div>

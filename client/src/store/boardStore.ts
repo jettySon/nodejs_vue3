@@ -48,7 +48,7 @@ export const useBoardStore = defineStore('board', {
             this.error = null
 
             try {
-                const response = await axios.get(`http://localhost:3000/api/boards`, {
+                const response = await axios.get(`http://localhost:3000/api/board`, {
                     params: {page, limit}
                 })
 
@@ -66,13 +66,13 @@ export const useBoardStore = defineStore('board', {
             this.loading = true
             this.error = null
             try {
-                const response = await axios.get(`http://localhost:3000/api/boards/one/${idx}`);
+                const response = await axios.get(`http://localhost:3000/api/board/one/${idx}`);
 
-                if (response.data && response.data.data) {
-                    this.currentBoard = response.data.data;
-                    return response.data.data;
+                if (response.data) {
+                    this.currentBoard = response.data;
+                    return response.data;
                 } else {
-                    throw new Error('게시물 데이터가 없습니다.');
+                    console.error('게시물 데이터가 없습니다.');
                 }
 
             } catch (error) {
@@ -81,6 +81,36 @@ export const useBoardStore = defineStore('board', {
             } finally {
                 this.loading = false
             }
+        },
+
+        async createBoard(boardData: {
+            writer: string;
+            writerKey: string;
+            title: string;
+            contentText: string;
+        }) {
+            this.loading = true;
+            this.error = null;
+
+            try {
+                const response = await axios.post(
+                    'http://localhost:3000/api/board/saveOne',
+                    boardData
+                );
+
+                return response.data.data;
+            } catch (error) {
+                this.error = error instanceof Error ? error.message : '게시글 저장에 실패했습니다';
+                console.error('Error saving board:', error);
+                throw error;
+            } finally {
+                this.loading = false;
+            }
         }
+
+
+
+
+
     }
 })

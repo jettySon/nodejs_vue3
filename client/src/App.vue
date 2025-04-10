@@ -6,7 +6,7 @@ import { RouterView, RouterLink } from 'vue-router'
 <template>
     <header class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <RouterLink class="navbar-brand" to="/">게시판 앱</RouterLink>
+            <RouterLink class="navbar-brand" to="/">게시판</RouterLink>
             <button
                     class="navbar-toggler"
                     type="button"
@@ -37,7 +37,7 @@ import { RouterView, RouterLink } from 'vue-router'
 
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container text-center">
-            <span class="text-muted">© 2025 게시판 애플리케이션</span>
+            <span class="text-muted">© 2025 Vue3 + Node.js </span>
         </div>
     </footer>
 </template>

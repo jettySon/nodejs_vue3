@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import BoardList from '../components/board/BoardList.vue'
 import Home from '../views/Home.vue'
 import BoardView from "../components/board/BoardView.vue";
+import BoardWrite from "../components/board/BoardWrite.vue";
 
 const routes = [
     {
@@ -19,6 +20,11 @@ const routes = [
         path: '/board/:idx',
         name: 'BoardView',
         component: BoardView
+    },
+    {
+        path: '/board/write',
+        name: 'BoardWrite',
+        component: BoardWrite
     }
 ]
 

@@ -1,7 +1,7 @@
 // src/services/board/BoardService.ts
 import prisma from '../../lib/prisma';
 import { BoardVO } from '../../models/board/BoardVO';
-import { Prisma, Board } from "@prisma/client";
+import {cms_board_data, Prisma} from "@prisma/client";
 
 interface PaginationResult<T> {
     data: T[];
@@ -19,28 +19,28 @@ export default class BoardService {
         const skip = (page - 1) * limit;
 
         // 필드명을 명시적으로 타입으로 선언하여 자동 완성 활성화
-        const whereCondition: Prisma.BoardWhereInput = {
+        const whereCondition: Prisma.cms_board_dataWhereInput = {
             is_use: true
         };
 
-        const orderByOption: Prisma.BoardOrderByWithRelationInput = {
+        const orderByOption: Prisma.cms_board_dataOrderByWithRelationInput = {
             idx: Prisma.SortOrder.desc
         };
 
         // 전체 개수와 페이지 데이터를 병렬로 조회
         const [total, boards] = await Promise.all([
-            prisma.board.count({
+            prisma.cms_board_data.count({
                 where: whereCondition
             }),
-            prisma.board.findMany({
+            prisma.cms_board_data.findMany({
                 where: whereCondition,
                 skip,
                 take: limit,
                 orderBy: orderByOption
             })
-        ]) as [number, Board[]];
+        ]) as [number, cms_board_data[]];
 
-        // 도메인 모델로 변환
+
         const boardVOs = boards.map(board => this.mapToVO(board));
 
         return {
@@ -64,19 +64,17 @@ export default class BoardService {
                 throw new Error('유효하지 않은 게시물 번호입니다.');
             }
 
-            const whereCondition: Prisma.BoardWhereUniqueInput = {
-                idx: boardIdx
-            };
-
-            const board = await prisma.board.findUnique({
-                where: whereCondition
+            const board = await prisma.cms_board_data.findUnique({
+                where: {
+                    idx: boardIdx
+                }
             });
 
             if(!board) {
                 return null;
             }
 
-            return this.mapToVO(board as unknown as Board);
+            return this.mapToVO(board);
 
         } catch (error) {
             console.error(`게시물 조회 오류 (idx: ${idx}):`, error);
@@ -84,17 +82,50 @@ export default class BoardService {
         }
     }
 
+    async saveBoardOne (boardData : BoardVO) {
+        try {
 
-    private mapToVO(data: Board): BoardVO {
+            const boardKey = 'notice'
+
+            const result = await prisma.cms_board_data.create({
+                data: {
+                    board_key: boardKey,
+                    writer_key: boardData.writerKey,
+                    writer: boardData.writer,
+                    title: boardData.title,
+                    content_text: boardData.contentText,
+                    is_use: true,
+                    create_date: new Date(),
+                    pidx: 0n, // BigInt 값은 뒤에 n을 붙여야 함
+                    gid: 0n,
+                    depth: 0,
+                    is_all_target: false,
+                    is_notice: false,
+                    is_secret: false,
+                    is_temp: false,
+                    order_main: 0n,
+                    order_num: 0n
+                }
+            }) as cms_board_data;
+
+            return this.mapToVO(result);
+
+        } catch (error) {
+            console.error(`게시물 저장 오류`, error);
+            throw error;
+        }
+    }
+
+    private mapToVO(data: any): BoardVO {
         // Prisma에서 받은 snake_case 필드를 BoardVO의 camelCase로 매핑
         return new BoardVO(
-            data.idx,
-            data.board_key,
-            data.writer_key,
-            data.writer,
-            data.title,
+            Number(data.idx),
+            data.board_key || '',
+            data.writer_key || '',
+            data.writer || '',
+            data.title || '',
             data.content_text,
-            data.is_use,
+            Boolean(data.is_use),
             data.create_date
         );
     }

@@ -8,7 +8,7 @@ import { RouterLink } from 'vue-router'
         <div class="row">
             <div class="col-md-8 offset-md-2 text-center">
                 <h1 class="mb-4 responsive-heading">게시판 프로젝트</h1>
-                <p class="lead">Vue 3 + TypeScript + Bootstrap 기반 게시판 애플리케이션</p>
+                <p class="lead">Vue 3 + TypeScript + Node.js + Prisma</p>
                 <div class="mt-5">
                     <RouterLink to="/board" class="btn btn-primary btn-lg responsive-button">
                         게시판 보기

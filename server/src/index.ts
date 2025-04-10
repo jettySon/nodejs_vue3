@@ -13,8 +13,8 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// "/api/boards" 경로에 boardRoutes 적용
-app.use('/api/boards', boardRoutes);
+// "/api/board" 경로에 boardRoutes 적용
+app.use('/api/board', boardRoutes);
 
 // 서버 시작
 app.listen(PORT, () => {
