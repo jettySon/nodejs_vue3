@@ -9,14 +9,14 @@ datasource db {
 }
 
 model Board {
-  idx         Int      @id @default(autoincrement())
-  boardKey    String   @unique @map("board_key")
-  writerKey   String   @map("writer_key")
-  writer      String   @map("writer")
-  title       String   @map("title")
-  contentText String?  @map("content_text") @db.Text
-  isUse       Boolean  @default(true) @map("is_use")
-  createDate  DateTime @default(now()) @map("create_date")
+  idx          Int      @id @default(autoincrement())
+  board_key    String
+  writer_key   String
+  writer       String
+  title        String
+  content_text String?  @db.Text
+  is_use       Boolean  @default(true)
+  create_date  DateTime @default(now())
 
   @@map("cms_board_data")
 }
