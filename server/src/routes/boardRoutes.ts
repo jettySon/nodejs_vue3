@@ -5,22 +5,13 @@ import BoardController from '../controllers/board/BoardController';
 const router = Router();
 const boardController = new BoardController();
 
-/**
- * 전체 게시글 조회
- * GET /api/boards
- */
+// 게시글 목록 조회
 router.get('/', boardController.getBoards);
 
-/**
- * 특정 게시물 조회 (쿼리 파라미터 사용)
- * GET /api/boards/one?idx=1
- */
-router.get('/one/:idx', boardController.getBoardOne);
+// 특정 게시글 조회
+router.get('/:id', boardController.getBoardOne);
 
-/**
- * 게시물 저장
- * POST
- */
-router.post('/saveOne', boardController.setBoardOne);
+// 게시글 생성
+router.post('/', boardController.setBoardOne);
 
 export default router;

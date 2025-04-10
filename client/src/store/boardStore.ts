@@ -1,6 +1,7 @@
 // src/store/boardStore.ts
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import {API_BASE_URL, API_ENDPOINTS} from "../config/api.ts";
 
 interface BoardItem {
     idx: number
@@ -48,14 +49,14 @@ export const useBoardStore = defineStore('board', {
             this.error = null
 
             try {
-                const response = await axios.get(`http://localhost:3000/api/board`, {
-                    params: {page, limit}
+                const response = await axios.get(API_ENDPOINTS.BOARD, {
+                    params: { page, limit }
                 })
 
                 this.boardItems = response.data.data
                 this.meta = response.data.meta
             } catch (error) {
-                this.error = error instanceof Error ? error.message : 'Failed to fetch boards'
+                this.error = error instanceof Error ? error.message : '게시글 목록을 불러오는데 실패했습니다'
                 console.error('Error fetching boards:', error)
             } finally {
                 this.loading = false
@@ -66,7 +67,7 @@ export const useBoardStore = defineStore('board', {
             this.loading = true
             this.error = null
             try {
-                const response = await axios.get(`http://localhost:3000/api/board/one/${idx}`);
+                const response = await axios.get(`${API_ENDPOINTS.BOARD}/${idx}`);
 
                 if (response.data) {
                     this.currentBoard = response.data;
@@ -74,10 +75,9 @@ export const useBoardStore = defineStore('board', {
                 } else {
                     console.error('게시물 데이터가 없습니다.');
                 }
-
             } catch (error) {
-                this.error = error instanceof Error ? error.message : 'Failed to fetchBoardOne'
-                console.error('Error fetching boards:', error)
+                this.error = error instanceof Error ? error.message : '게시글을 불러오는데 실패했습니다'
+                console.error('Error fetching board:', error)
             } finally {
                 this.loading = false
             }
@@ -93,11 +93,7 @@ export const useBoardStore = defineStore('board', {
             this.error = null;
 
             try {
-                const response = await axios.post(
-                    'http://localhost:3000/api/board/saveOne',
-                    boardData
-                );
-
+                const response = await axios.post(API_ENDPOINTS.BOARD, boardData);
                 return response.data.data;
             } catch (error) {
                 this.error = error instanceof Error ? error.message : '게시글 저장에 실패했습니다';
@@ -107,10 +103,5 @@ export const useBoardStore = defineStore('board', {
                 this.loading = false;
             }
         }
-
-
-
-
-
     }
 })

@@ -23,23 +23,22 @@ export default class BoardController {
         }
     }
 
-
     getBoardOne = async (req: Request, res: Response): Promise<void> => {
         try {
-            // 경로 매개변수에서 idx 가져오기 (req.query 대신 req.params 사용)
-            const idxParam = req.params.idx;
-            if (!idxParam) {
-                res.status(400).json({ error: '게시물 번호(idx)가 필요합니다.' });
+            // 경로 매개변수에서 id 가져오기
+            const idParam = req.params.id;
+            if (!idParam) {
+                res.status(400).json({ error: '게시물 번호(id)가 필요합니다.' });
                 return;
             }
 
-            const idx = Number(idxParam);
-            if (isNaN(idx)) {
+            const id = Number(idParam);
+            if (isNaN(id)) {
                 res.status(400).json({ error: '유효하지 않은 게시물 번호입니다.' });
                 return;
             }
 
-            const result = await this.boardService.getBoardOne(idx);
+            const result = await this.boardService.getBoardOne(id);
             if (result === null) {
                 res.status(404).json({ error: '게시물을 찾을 수 없습니다.' });
                 return;
@@ -54,7 +53,6 @@ export default class BoardController {
 
     setBoardOne = async (req: Request, res: Response) => {
         try {
-
             const result = await this.boardService.saveBoardOne(req.body);
 
             res.status(201).json({
@@ -62,10 +60,8 @@ export default class BoardController {
                 data: result,
                 message: '게시글이 성공적으로 등록되었습니다.'
             });
-
-
         } catch (error) {
-            console.error('게시글 상세 조회 오류:', error);
+            console.error('게시글 등록 오류:', error);
             res.status(500).json({ error: '서버 내부 오류가 발생했습니다' });
         }
     }

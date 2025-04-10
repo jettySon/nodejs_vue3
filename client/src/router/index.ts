@@ -17,14 +17,14 @@ const routes = [
         component: BoardList
     },
     {
-        path: '/board/:idx',
-        name: 'BoardView',
-        component: BoardView
-    },
-    {
         path: '/board/write',
         name: 'BoardWrite',
         component: BoardWrite
+    },
+    {
+        path: '/board/:idx',
+        name: 'BoardView',
+        component: BoardView
     }
 ]
 

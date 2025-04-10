@@ -1,41 +1,38 @@
 <script setup lang="ts">
+import { computed, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useBoardStore } from "../../store/boardStore.ts";
+import { formatDate } from "../../utils/dateUtils.ts";
 
-import {computed, onMounted} from "vue";
-import {useRoute, useRouter} from "vue-router";
-import {useBoardStore} from "../../store/boardStore.ts";
-import {formatDate} from "../../utils/dateUtils.ts";
-
-const route = useRoute()
-const router = useRouter()
-const boardStore = useBoardStore()
+const route = useRoute();
+const router = useRouter();
+const boardStore = useBoardStore();
 
 // Computed properties
-const board = computed(() => boardStore.currentBoard)
-const loading = computed(() => boardStore.loading)
-const error = computed(() => boardStore.error)
+const board = computed(() => boardStore.currentBoard);
+const loading = computed(() => boardStore.loading);
+const error = computed(() => boardStore.error);
 
 onMounted(async () => {
     // Get idx from route parameters
-    const idx = Number(route.params.idx)
+    const idx = Number(route.params.idx);
 
     // Validate idx
     if (isNaN(idx)) {
-        router.push('/board') // Redirect to board list if idx is invalid
-        return
+        router.push('/board'); // Redirect to board list if idx is invalid
+        return;
     }
 
     // Fetch board data
-    await boardStore.fetchBoardOne(idx)
-})
+    await boardStore.fetchBoardOne(idx);
+});
 
 function goList() {
-    router.push('/board')
+    router.push('/board');
 }
-
 </script>
 
 <template>
-
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>게시글 상세</h2>
@@ -63,12 +60,12 @@ function goList() {
 
             <div class="card-body">
                 <div class="mb-4 text-muted d-flex justify-content-between">
-            <span>
-                <strong>작성자:</strong> {{ board.writer }}
-            </span>
-            <span>
-                <strong>작성일:</strong> {{ formatDate(new Date(board.createDate || new Date())) }}
-            </span>
+                    <span>
+                        <strong>작성자:</strong> {{ board.writer }}
+                    </span>
+                    <span>
+                        <strong>작성일:</strong> {{ formatDate(new Date(board.createDate || new Date())) }}
+                    </span>
                 </div>
 
                 <div class="board-content border-top pt-4">
