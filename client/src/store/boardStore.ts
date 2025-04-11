@@ -1,7 +1,7 @@
 // src/store/boardStore.ts
 import { defineStore } from 'pinia'
 import axios from 'axios'
-import {API_BASE_URL, API_ENDPOINTS} from "../config/api.ts";
+import {API_ENDPOINTS} from "../config/api.ts";
 
 interface BoardItem {
     idx: number
